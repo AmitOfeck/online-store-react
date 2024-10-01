@@ -3,6 +3,9 @@ const router = express.Router();
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const validEnum = require('../middleware/validEnum'); 
+
+const userTypes = ['customer', 'admin', 'supplier'];
 
 
 // User registration
@@ -12,6 +15,8 @@ router.post('/register', async (req, res) => {
     if (!email || !password || !type || !firstName || !lastName || !streetAddress || !city) {
         return res.status(400).json({ error: 'All fields are required' });
     }
+    if (!validEnum('type', userTypes)(req, res)) return;
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
@@ -47,7 +52,7 @@ router.post('/register', async (req, res) => {
     return res.status(401).json({ error: 'Authentication failed' });
     }
     const token = jwt.sign({ userId: user._id, type: user.type }, 'your-secret-key', {
-    expiresIn: '1h',
+    expiresIn: '3h',
     });
     res.status(200).json({ token });
     } catch (error) {

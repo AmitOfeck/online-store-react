@@ -8,15 +8,28 @@ const orderSchema = new Schema({
     required: true
   },
   items: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Product'
+    id: {
+      type: Schema.Types.ObjectId,
+      ref: 'Product',
+      required: true
+    },
+    quantity: {
+      type: Number,
+      required: true,
+      min: 0
+    },
+    name: {
+      type: String,
+      required: true
+    }
   }],
   ordered: {
     type: Boolean,
     required: true
   },
   bill: {
-    type: Number
+    type: Number,
+    default: 0
   }
 });
 
